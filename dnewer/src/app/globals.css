@@ -1,0 +1,109 @@
+/* app/globals.css */
+
+/* 1) Load Tailwind v4 */
+@import "tailwindcss";
+
+/* 2) Optional plugin (Typography) */
+@plugin "@tailwindcss/typography";
+
+/* 3) Define your theme (v4 uses CSS variables via @theme) */
+@theme {
+  /* Fonts (hooked to next/font vars set on <html>) */
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand colors (gold scale) */
+  --color-gold-50: #FFFBE6;
+  --color-gold-100: #FFF5BF;
+  --color-gold-200: #FFEE99;
+  --color-gold-300: #FFE366;
+  --color-gold-400: #FEDA3A;
+  --color-gold-500: #FDD61E;
+  /* default */
+  --color-gold-600: #E6BE00;
+  --color-gold-700: #B38F00;
+  --color-gold-800: #806600;
+  --color-gold-900: #4D3D00;
+
+  /* Neutrals */
+  --color-brand-dark: #1A1A1A;
+
+  /* Container padding (optional) */
+  --container-padding: 1rem;
+}
+
+/* 4) Base page styles */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply font-body bg-white text-neutral-900 antialiased;
+}
+
+/* 5) Recreate your small design system via @utility (v4 way) */
+@utility btn {
+  @apply inline-flex items-center justify-center rounded-2xl px-4 py-2 font-medium shadow border-2 border-transparent transition-colors duration-300 ease-in-out;
+}
+
+/* Black → Gold with smooth text/bg/border color transition */
+@utility btn-primary {
+  @apply bg-black text-white hover:bg-gold-400 hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gold-600 transition-all duration-300;
+}
+
+
+/* If you want a slightly different secondary feel but same animation */
+@utility btn-secondary {
+  @apply bg-black text-white hover:bg-gold-200 hover:text-black;
+}
+
+@utility btn-ghost {
+  @apply bg-transparent text-neutral-900 transition-all duration-300;
+}
+
+@utility header-link {
+  @apply text-sm font-medium hover:opacity-80;
+}
+
+@utility card {
+  @apply rounded-2xl border border-neutral-200 bg-white p-6 shadow;
+}
+
+/* @utility section {
+  @apply py-12 md:py-16;
+} */
+
+/* Centered page container with responsive padding */
+.container {
+  @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8;
+}
+
+html { scroll-behavior: smooth; }
+/* Typography helper */
+.prose {
+  @apply prose-neutral max-w-none;
+}
+
+/* globals.css */
+@layer components {
+  /* Titles & text scales */
+  .title {
+    @apply font-display text-5xl md:text-6xl leading-[1.2];
+  }
+
+  .subtitle {
+    @apply font-display text-3xl md:text-4xl leading-tight font-semibold;
+  }
+
+  .maintext {
+    @apply font-body text-lg leading-relaxed;
+  }
+
+  /* Tailwind doesn't ship `text-md` by default.
+     Using text-base here for "subtext".
+     If you want a true `text-md`, see the note below. */
+  .subtext {
+    @apply font-body text-base leading-normal text-black/70;
+  }
+}
