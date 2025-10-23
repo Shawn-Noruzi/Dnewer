@@ -33,7 +33,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function HomePage() {
   return (
     <div className="pt-[100px]">
-      {/* Hero header with responsive background and CTAs */}
       <HeroHeader />
       <Services />
       <ServiceArea />

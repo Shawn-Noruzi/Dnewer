@@ -99,7 +99,7 @@ export default function HeroHeader() {
                             className="block text-2xl sm:text-3xl md:text-4xl opacity-90"
                             variants={slowFade}
                         >
-                            Design • Build • Renew
+                            Managing • Maintenance • Services
                         </motion.span>
 
                         <motion.span
@@ -107,62 +107,62 @@ export default function HeroHeader() {
                             variants={fadeUp}
                             custom={0}
                         >
-                            Transform your{" "}
+                            Thinking beyond {" "}
                             <span className="bg-linear-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
-                                Kitchen & Home
+                                limits
                             </span>
                         </motion.span>
                     </motion.h1>
 
-                {/* Subtext */}
-                <motion.p
-                    className="mt-4 max-w-2xl text-white/90 subtext drop-shadow"
-                    variants={fadeUp}
-                    custom={1}
-                    {...animationProps}
-                >
-                    Commercial & residential renovations: repairs, remodeling, installations, tiling,
-                    cabinets, painting, decks, landscaping, and more.
-                </motion.p>
-
-                {/* CTAs */}
-                <motion.div
-                    className="mt-6 flex flex-wrap items-center gap-3"
-                    variants={fadeUp}
-                    custom={2}
-                    {...animationProps}
-                >
-                    <button onClick={() => openContactModal()} className="btn btn-secondary text-base">
-                        Get a Free Quote
-                    </button>
-
-                    <a
-                        href="tel:604-446-9332"
-                        className="inline-flex items-center gap-2 rounded-2xl border-2 border-white/70 bg-white/10 px-4 py-2 font-medium text-white backdrop-blur hover:bg-white/20 transition"
+                    {/* Subtext */}
+                    <motion.p
+                        className="mt-4 max-w-2xl text-white/90 subtext drop-shadow"
+                        variants={fadeUp}
+                        custom={1}
+                        {...animationProps}
                     >
-                        <Phone className="h-4 w-4" />
-                        Call 604-446-9332
-                    </a>
-                </motion.div>
+                        Commercial & residential renovations: repairs, remodeling, installations, tiling,
+                        cabinets, painting, decks, landscaping, 24/7 emergency service calls and more.
+                    </motion.p>
 
-                {/* Service chips */}
-                <motion.ul
-                    className="mt-6 flex flex-wrap gap-2"
-                    {...animationProps}
-                >
-                    {chips.map((t, i) => (
-                        <motion.li
-                            key={t}
-                            className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm text-white/90 backdrop-blur"
-                            variants={chipVariant}
-                            custom={i}
+                    {/* CTAs */}
+                    <motion.div
+                        className="mt-6 flex flex-wrap items-center gap-3"
+                        variants={fadeUp}
+                        custom={2}
+                        {...animationProps}
+                    >
+                        <button onClick={() => openContactModal()} className="btn btn-secondary text-base">
+                            Get a Free Quote
+                        </button>
+
+                        <a
+                            href="tel:604-446-9332"
+                            className="inline-flex items-center gap-2 rounded-2xl border-2 border-white/70 bg-white/10 px-4 py-2 font-medium text-white backdrop-blur hover:bg-white/20 transition"
                         >
-                            {t}
-                        </motion.li>
-                    ))}
-                </motion.ul>
+                            <Phone className="h-4 w-4" />
+                            Call 604-446-9332
+                        </a>
+                    </motion.div>
+
+                    {/* Service chips */}
+                    <motion.ul
+                        className="mt-6 flex flex-wrap gap-2"
+                        {...animationProps}
+                    >
+                        {chips.map((t, i) => (
+                            <motion.li
+                                key={t}
+                                className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm text-white/90 backdrop-blur"
+                                variants={chipVariant}
+                                custom={i}
+                            >
+                                {t}
+                            </motion.li>
+                        ))}
+                    </motion.ul>
+                </div>
             </div>
-        </div>
         </section >
     );
 }
