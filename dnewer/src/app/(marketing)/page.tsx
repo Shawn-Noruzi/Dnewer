@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import HeroHeader from "@/components/HeroHeader";
 import Services from "@/components/Services";
 import ServiceArea from "@/components/ServiceArea";
-import ContactCtaBanner from "@/components/ContactCTABanner";
+import ContactCTABanner from "@/components/ContactCTABanner";
 import Testimonials from "@/components/Testimonials";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -38,7 +38,7 @@ export default function HomePage() {
       <Services />
       <ServiceArea />
       <Testimonials />
-      <ContactCtaBanner />
+      <ContactCTABanner />
     </div>
   );
 }

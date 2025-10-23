@@ -1,11 +1,11 @@
-// components/ContactCtaBanner.tsx
+// components/ContactCTABanner.tsx
 "use client";
 
 import { useContactModal } from "@/components/ContactUsModal";
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
 
-export default function ContactCtaBanner() {
+export default function ContactCTABanner() {
     const { openContactModal } = useContactModal();
 
     return (

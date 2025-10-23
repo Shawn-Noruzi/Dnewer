@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import GalleryGrid from "@/components/GalleryGrid";
-import ContactCtaBanner from "@/components/ContactCTABanner";
+import ContactCTABanner from "@/components/ContactCTABanner";
 
 export const metadata = {
   title: "Gallery | Dnewer",
@@ -72,7 +72,7 @@ export default function GalleryPage() {
         <GalleryGrid images={files} navOffset={120} />
       </section>
 
-      <ContactCtaBanner />
+      <ContactCTABanner />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 // app/about/page.tsx
 import { Hammer, Ruler, Paintbrush, Trees, ShieldCheck, ThumbsUp } from "lucide-react";
-import ContactCtaBanner from "@/components/ContactCTABanner";
+import ContactCTABanner from "@/components/ContactCTABanner";
 import ProcessTimeline from "@/components/ProcessTimeline";
 export const metadata = {
     title: "About Us | Dnewer",
@@ -123,7 +123,7 @@ export default function AboutPage() {
             />
 
 
-            <ContactCtaBanner />
+            <ContactCTABanner />
 
             {/* Spacer for safety */}
             <div className="h-10" />
