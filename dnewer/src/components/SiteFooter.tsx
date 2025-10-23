@@ -1,9 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Route } from "next";
 import { Phone, Mail } from "lucide-react";
-import { sanity } from "@/lib/sanity";
 import clsx from "clsx";
 
+/* ----------------------------- Types ----------------------------- */
 type FooterDoc = {
   brandName?: string;
   tagline?: string;
@@ -14,57 +15,93 @@ type FooterDoc = {
     email?: string;
     href?: string;
     address?: {
-      line1?: string; line2?: string;
-      city?: string; province?: string;
-      postalCode?: string; country?: string;
+      line1?: string;
+      line2?: string;
+      city?: string;
+      province?: string;
+      postalCode?: string;
+      country?: string;
     };
   }[];
   social?: { label?: string; href?: string }[];
   legal?: { label?: string; href?: string }[];
 };
 
-const query = /* groq */ `
-*[_type=="footerSettings"][0]{
-  brandName, tagline,
-  quickLinks[]{label,href},
-  locations[]{name,phone,email,href, address{line1,line2,city,province,postalCode,country}},
-  social[]{label,href},
-  legal[]{label,href}
-}
-`;
+/* -------------------------- Static Content -------------------------- */
+const STATIC_FOOTER: FooterDoc = {
+  brandName: "Dnewer Services Ltd.",
+  tagline: "Renovations, Construction, and Home Improvements.",
 
+  quickLinks: [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
+    { label: "Our Work", href: "/our-work" },
+  ],
+
+  locations: [
+    {
+      phone: "(604) 446-9332",
+      email: "Dnewer@hotmail.com",
+      href: "",
+      address: {
+        line1: "",
+        line2: "",
+        city: "",
+        province: "",
+        postalCode: "",
+        country: "",
+      },
+    },
+  ],
+
+  social: [
+    { label: "Instagram", href: "https://instagram.com/" },
+    { label: "Facebook", href: "https://facebook.com/" },
+    { label: "TikTok", href: "https://tiktok.com/" },
+  ],
+
+  legal: [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+  ],
+};
+
+/* -------------------------- Helper -------------------------- */
 function isInternal(href?: string): href is `/${string}` {
   return !!href && href.startsWith("/");
 }
 
-export default async function SiteFooter() {
-  const d = await sanity.fetch<FooterDoc>(query, {}, { next: { revalidate: 0 } });
+/* -------------------------- Assets -------------------------- */
+const FOOTER_LOGO_SRC = "/footerlogo.png"; // public/footerlogo.png
 
-  const brandName = d?.brandName ?? "Factory Optical (1980) Ltd.";
-  const tagline   = d?.tagline   ?? "Quality eyewear, advanced exams, and friendly experts.";
-  const quick     = d?.quickLinks ?? [];
-  const locs      = (d?.locations ?? []).filter(Boolean);
-  const social    = d?.social ?? [];
-  const legal     = d?.legal  ?? [];
+/* -------------------------- Component -------------------------- */
+export default function SiteFooter() {
+  const d = STATIC_FOOTER;
 
-  // 2-col layout for locations if many items
+  const brandName = d.brandName ?? "";
+  const tagline = d.tagline ?? "";
+  const quick = d.quickLinks ?? [];
+  const locs = (d.locations ?? []).filter(Boolean);
+  const social = d.social ?? [];
+  const legal = d.legal ?? [];
+
   const locationsListClass = clsx(
     "mt-3",
     locs.length >= 3 ? "grid grid-cols-2 gap-4" : "space-y-3"
   );
 
   return (
-    <footer className="relative bg-black text-white -mt-[210px] -z-[1] pt-[240px]">
+    <footer className="relative bg-black text-white -mt-[210px] -z-1 pt-[240px]">
       <div className="container py-12 grid gap-10 md:grid-cols-4">
-        {/* Brand + tagline ONLY (address removed) */}
+        {/* ---------- Brand ---------- */}
         <div>
           <div className="font-display text-lg text-white">{brandName}</div>
           <p className="mt-2 text-sm text-white/70">{tagline}</p>
         </div>
 
-        {/* Quick Links */}
+        {/* ---------- Quick Links ---------- */}
         <div>
-          <div className="font-medium text-white">Quick links</div>
+          <div className="font-medium text-white">Quick Links</div>
           <ul className="mt-3 space-y-2 text-sm text-white/80">
             {quick.map((q, i) => (
               <li key={i}>
@@ -87,9 +124,10 @@ export default async function SiteFooter() {
           </ul>
         </div>
 
-        {/* Locations — each shows name, address, phone (and email if provided) */}
+        {/* ---------- Locations / Contact ---------- */}
         <div className="min-w-0">
-          <div className="font-medium text-white">Locations</div>
+          <div className="font-medium text-white">Contact</div>
+
           {locs.length === 0 ? (
             <div className="mt-3 text-sm text-white/60">No locations yet.</div>
           ) : (
@@ -107,22 +145,27 @@ export default async function SiteFooter() {
                 const content = (
                   <div>
                     <div className="text-sm font-medium text-white">{l.name}</div>
+
                     <div className="mt-1 text-[13px] leading-snug text-white/80">
                       {addressLines.map((line, idx) => (
                         <div key={idx}>{line}</div>
                       ))}
-                      {l.phone ? (
+
+                      {l.phone && (
                         <div className="mt-1 flex items-center gap-2">
                           <Phone className="h-3.5 w-3.5" />
                           <span>{l.phone}</span>
                         </div>
-                      ) : null}
-                      {l.email ? (
+                      )}
+
+                      {l.email && (
                         <div className="mt-1 flex items-center gap-2">
                           <Mail className="h-3.5 w-3.5" />
-                          <a href={`mailto:${l.email}`} className="underline">{l.email}</a>
+                          <a href={`mailto:${l.email}`} className="underline">
+                            {l.email}
+                          </a>
                         </div>
-                      ) : null}
+                      )}
                     </div>
                   </div>
                 );
@@ -152,51 +195,23 @@ export default async function SiteFooter() {
           )}
         </div>
 
-        {/* Social / Legal */}
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <div className="font-medium text-white">Social</div>
-            <ul className="mt-3 space-y-2 text-sm text-white/80">
-              {social.map((s, i) => (
-                <li key={i}>
-                  <a
-                    href={s.href || "#"}
-                    className="hover:underline"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="font-medium text-white">Legal</div>
-            <ul className="mt-3 space-y-2 text-sm text-white/80">
-              {legal.map((l, i) => (
-                <li key={i}>
-                  {isInternal(l.href) ? (
-                    <Link href={l.href as Route<string>} className="hover:underline">
-                      {l.label}
-                    </Link>
-                  ) : (
-                    <a
-                      href={l.href || "#"}
-                      className="hover:underline"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {l.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* ---------- Right Logo ---------- */}
+        <div className="flex items-start justify-center md:justify-end">
+          <Link href="/" aria-label="Dnewer home">
+            <Image
+              src={FOOTER_LOGO_SRC}
+              alt="Dnewer logo"
+              width={220}
+              height={80}
+              sizes="(max-width: 768px) 160px, 220px"
+              className="h-auto w-[160px] md:w-[220px] opacity-90 hover:opacity-100 transition-opacity duration-200"
+              priority={false}
+            />
+          </Link>
         </div>
       </div>
 
+      {/* ---------- Bottom Bar ---------- */}
       <div className="border-t border-white/10 py-4 text-center text-sm text-white/60">
         © {new Date().getFullYear()} {brandName}. All rights reserved.
       </div>

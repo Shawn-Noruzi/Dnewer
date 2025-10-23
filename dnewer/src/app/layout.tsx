@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter, Montserrat } from "next/font/google";
+import { ContactModalProvider } from "@/components/ContactUsModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -63,7 +64,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <body className="font-body min-h-screen flex flex-col">
-        {children}
+        <ContactModalProvider>
+          {children}
+        </ContactModalProvider>
       </body>
     </html>
   );

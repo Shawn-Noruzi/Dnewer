@@ -1,40 +1,22 @@
-import HeroServer from "@/components/hero/HeroServer";
-import ValuePropsServer from "@/components/value-props/ValuePropsServer";
-import VirtualTryOnHeroServer from "@/components/vto/VirtualTryOnHeroServer";
-import BlogStories from "@/components/BlogStories";
-import ContactCtaBannerServer from "@/components/contact/ContactCtaBannerServer";
-import Spacer from "@/components/Spacer";
-import type { Metadata } from "next";
-import { sanity } from "@/lib/sanity";
+import { Metadata } from "next";
+import HeroHeader from "@/components/HeroHeader";
+import Services from "@/components/Services";
+import ServiceArea from "@/components/ServiceArea";
+import ContactCtaBanner from "@/components/ContactCTABanner";
+import Testimonials from "@/components/Testimonials";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
-const seoQuery = /* groq */ `
-*[_type=="heroSection"][0]{
-  metaTitle, 
-  metaDescription
-}
-`;
-
-type Doc = {
-  metaTitle?: string;
-  metaDescription?: string;
-};
-
-
 export async function generateMetadata(): Promise<Metadata> {
-  const d = await sanity.fetch<Doc | null>(seoQuery, {}, { next: { revalidate: 0 } });
-
-  const title = d?.metaTitle || "Home Factory Optical";
+  const title = "Dnewer — Home renovation & remodeling services";
   const description =
-    d?.metaDescription ||
-    "Committed to your vision. ";
+    "Dnewer delivers commercial & residential renovations: remodeling, installations, tiling, cabinets, painting, decks, and landscaping. Get a free quote today.";
 
   return {
     title,
     description,
-    alternates: { canonical: "/" }, // resolves using metadataBase in layout
+    alternates: { canonical: "/" },
     openGraph: {
       title,
       description,
@@ -48,19 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-
 export default function HomePage() {
   return (
-    <div className={"pt-[100px]"} >
-      <HeroServer />
-      <Spacer />
-      <ValuePropsServer />
-      <Spacer />
-      {/* <VirtualTryOnHeroServer /> */}
-      {/* <Spacer /> */}
-      <BlogStories />
-      <Spacer />
-      <ContactCtaBannerServer />
+    <div className="pt-[100px]">
+      {/* Hero header with responsive background and CTAs */}
+      <HeroHeader />
+      <Services />
+      <ServiceArea />
+      <Testimonials />
+      <ContactCtaBanner />
     </div>
   );
 }

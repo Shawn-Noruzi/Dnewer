@@ -27,9 +27,6 @@
       "@/lib/*": [
         "./src/lib/*"
       ],
-      "@/sanity.config": [
-        "./sanity.config.ts"
-      ]
     },
     "types": [
       "node"

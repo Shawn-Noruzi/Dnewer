@@ -12,21 +12,26 @@
   --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand colors (gold scale) */
-  --color-gold-50: #FFFBE6;
-  --color-gold-100: #FFF5BF;
-  --color-gold-200: #FFEE99;
-  --color-gold-300: #FFE366;
-  --color-gold-400: #FEDA3A;
-  --color-gold-500: #FDD61E;
-  /* default */
-  --color-gold-600: #E6BE00;
-  --color-gold-700: #B38F00;
-  --color-gold-800: #806600;
-  --color-gold-900: #4D3D00;
+  /* Brand colors (Construction Orange scale — replaces previous “gold”) */
+  /* Tailwind Orange tones for a trusted reno look */
+  --color-gold-50:  #FFF7ED;  /* light highlight / hovers */
+  --color-gold-100: #FFEDD5;
+  --color-gold-200: #FED7AA;
+  --color-gold-300: #FDBA74;
+  --color-gold-400: #FB923C;  /* default hover accent */
+  --color-gold-500: #F97316;  /* main accent */
+  --color-gold-600: #EA580C;  /* default */
+  --color-gold-700: #C2410C;
+  --color-gold-800: #9A3412;
+  --color-gold-900: #7C2D12;
 
-  /* Neutrals */
-  --color-brand-dark: #1A1A1A;
+  /* Neutrals (charcoal + concrete) */
+  --color-brand-dark: #1A1A1A;     /* headers, body on light */
+  --color-concrete-50:  #F9FAFB;
+  --color-concrete-100: #F3F4F6;
+  --color-concrete-200: #E5E7EB;
+  --color-concrete-300: #D1D5DB;
+  --color-concrete-700: #374151;    /* deep slate for text on light */
 
   /* Container padding (optional) */
   --container-padding: 1rem;
@@ -42,20 +47,19 @@ body {
   @apply font-body bg-white text-neutral-900 antialiased;
 }
 
-/* 5) Recreate your small design system via @utility (v4 way) */
+/* 5) Small design system via @utility (v4 way) */
 @utility btn {
   @apply inline-flex items-center justify-center rounded-2xl px-4 py-2 font-medium shadow border-2 border-transparent transition-colors duration-300 ease-in-out;
 }
 
-/* Black → Gold with smooth text/bg/border color transition */
+/* Primary button: charcoal → construction orange on hover */
 @utility btn-primary {
-  @apply bg-black text-white hover:bg-gold-400 hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gold-600 transition-all duration-300;
+  @apply bg-black text-white hover:bg-gold-500 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gold-600 transition-all duration-300;
 }
 
-
-/* If you want a slightly different secondary feel but same animation */
+/* Secondary: solid orange with deeper hover */
 @utility btn-secondary {
-  @apply bg-black text-white hover:bg-gold-200 hover:text-black;
+  @apply bg-gold-600 text-white hover:bg-gold-700;
 }
 
 @utility btn-ghost {
@@ -70,40 +74,38 @@ body {
   @apply rounded-2xl border border-neutral-200 bg-white p-6 shadow;
 }
 
-/* @utility section {
-  @apply py-12 md:py-16;
-} */
-
 /* Centered page container with responsive padding */
 .container {
   @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8;
 }
 
 html { scroll-behavior: smooth; }
+
 /* Typography helper */
 .prose {
   @apply prose-neutral max-w-none;
 }
 
-/* globals.css */
 @layer components {
   /* Titles & text scales */
   .title {
-    @apply font-display text-5xl md:text-6xl leading-[1.2];
+    @apply font-display text-5xl md:text-6xl leading-[1.2] text-[var(--color-brand-dark)];
   }
 
   .subtitle {
-    @apply font-display text-3xl md:text-4xl leading-tight font-semibold;
+    @apply font-display text-3xl md:text-4xl leading-tight font-semibold text-[var(--color-brand-dark)];
   }
 
   .maintext {
     @apply font-body text-lg leading-relaxed;
   }
 
-  /* Tailwind doesn't ship `text-md` by default.
-     Using text-base here for "subtext".
-     If you want a true `text-md`, see the note below. */
   .subtext {
     @apply font-body text-base leading-normal text-black/70;
   }
+
+  /* Accent helpers if you want quick text/border accents */
+  .text-accent { color: var(--color-gold-600); }
+  .bg-accent   { background-color: var(--color-gold-600); }
+  .border-accent { border-color: var(--color-gold-600); }
 }
