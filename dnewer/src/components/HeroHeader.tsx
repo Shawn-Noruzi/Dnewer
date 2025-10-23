@@ -84,9 +84,6 @@ export default function HeroHeader() {
                 />
             </picture>
 
-            {/* Left-to-right + vertical gradient overlays */}
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/80 via-black/40 to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-black/40" /> 
 
             <div className="relative z-10 h-full">
                 <div className="container flex h-full flex-col justify-center">
