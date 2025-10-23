@@ -20,12 +20,14 @@ const LOGO_URL: string | undefined = "/logo-1.png"; // replace with your logo pa
 
 // Desktop/General nav (you can add more later if needed)
 const NAV_LINKS: NavLink[] = [
+  { href: "/services", label: "Services" },
   { href: "/about", label: "About" },
   { href: "/our-work", label: "Our Work" },
 ];
 
 // Mobile should only show these pages (same as above by request)
 const MOBILE_LINKS: NavLink[] = [
+  { href: "/services", label: "Services" },
   { href: "/about", label: "About" },
   { href: "/our-work", label: "Our Work" },
 ];

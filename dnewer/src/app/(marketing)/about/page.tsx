@@ -1,7 +1,7 @@
 // app/about/page.tsx
 import { Hammer, Ruler, Paintbrush, Trees, ShieldCheck, ThumbsUp } from "lucide-react";
 import ContactCTABanner from "@/components/ContactCTABanner";
-import ProcessTimeline from "@/components/ProcessTimeline";
+import ServiceAreaBanner from "@/components/ServiceAreaBanner";
 export const metadata = {
     title: "About Us | Dnewer",
     description:
@@ -17,7 +17,7 @@ export default function AboutPage() {
                     className="relative"
                     style={{
                         background:
-                            "linear-gradient(140deg, #F97316 0%, #fb8b3c 40%, #ffb27d 100%)",
+                            "linear-gradient(140deg, #F97316 0%, #fb8b3c 50%, #ffb27d 100%)",
                     }}
                 >
                     {/* subtle pattern */}
@@ -43,12 +43,11 @@ export default function AboutPage() {
                         <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-sm font-semibold backdrop-blur">
                             Dnewer Services Ltd.
                         </span>
-                        <h1 className="mt-4 font-display text-4xl leading-tight md:text-6xl">
-                            Renovations That <span className="font-semibold">Elevate Your Space</span>
+                        <h1 className="mt-4 font-display text-4xl leading-tight md:text-6xl max-w-6xl mx-auto">
+                            Passionate Builders.<br/>  Trusted Partners. <br/> <span className="font-semibold">Proven Results.</span>
                         </h1>
                         <p className="mx-auto mt-5 max-w-3xl text-white/90">
-                            Commercial & residential renovations across the Lower Mainland and Fraser Valley —
-                            kitchens, bathrooms, decks, tiling, painting, landscaping, and more.
+                            Dnewer Services was founded on a simple idea — every renovation deserves honesty, craftsmanship, and lasting quality. We take pride in treating your space like it’s our own, earning trust project by project across the Lower Mainland.
                         </p>
 
 
@@ -110,17 +109,8 @@ export default function AboutPage() {
                 </div>
             </section>
 
-
-            {/* ========= VALUES (Branded) ========= */}
-            <ProcessTimeline
-                imageSrc="/gallery/headerKitchen-desktop.webp"
-                steps={[
-                    { title: "Consult", body: "Walk-through, scope, and priorities. We capture measurements and constraints." },
-                    { title: "Plan", body: "Clear estimate, options, and schedule. Permits or strata needs handled." },
-                    { title: "Build", body: "Site protection, tidy workspace, and quality checks at each milestone." },
-                    { title: "Deliver", body: "Final walkthrough, touch-ups, and maintenance guidance post-project." },
-                ]}
-            />
+            {/* ========= SERVICE AREA BANNER ========= */}
+            <ServiceAreaBanner />   
 
 
             <ContactCTABanner />

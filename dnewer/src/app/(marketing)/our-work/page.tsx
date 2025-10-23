@@ -30,7 +30,7 @@ export default function GalleryPage() {
           className="relative"
           style={{
             background:
-              "linear-gradient(140deg, #F97316 0%, #fb8b3c 40%, #ffb27d 100%)",
+              "linear-gradient(140deg, #F97316 0%, #fb8b3c 50%, #ffb27d 100%)",
           }}
         >
           {/* subtle pattern */}
@@ -57,11 +57,10 @@ export default function GalleryPage() {
               Our Work
             </span>
             <h1 className="mt-4 font-display text-4xl leading-tight md:text-6xl">
-              Renovations That <span className="font-semibold">Elevate Your Space</span>
+              See the Difference <br/> <span className="font-semibold">Quality Makes</span>
             </h1>
             <p className="mx-auto mt-5 max-w-3xl text-white/90">
-              Commercial & residential projects across the Lower Mainland and Fraser Valley —
-              kitchens, bathrooms, decks, tiling, painting, landscaping, and more.
+              Explore our gallery of completed renovations — kitchens, bathrooms, decks, and custom spaces — each designed with precision, built with care, and made to stand the test of time.
             </p>
           </div>
         </div>
