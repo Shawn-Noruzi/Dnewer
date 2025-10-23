@@ -149,7 +149,7 @@ export default function ProcessTimeline({
                 {/* Node badge */}
                 <span
                   className={[
-                    "absolute left-0 top-5 -translate-x-[calc(100%+12px)] grid h-8 w-8 place-items-center rounded-full text-sm font-bold",
+                    "absolute left-[7px] xl:left-0 top-5 -translate-x-[calc(100%+12px)] grid h-8 w-8 place-items-center rounded-full text-sm font-bold",
                     isComplete
                       ? "bg-[#F97316] text-white"
                       : "bg-white text-[#F97316] border border-[#F97316]/40",
