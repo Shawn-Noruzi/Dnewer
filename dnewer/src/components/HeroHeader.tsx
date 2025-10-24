@@ -78,12 +78,12 @@ export default function HeroHeader() {
           >
             {CAPABILITIES.map((label, i) => (
               <span key={label} className="inline-flex items-center whitespace-nowrap">
-                {i > 0 && (
-                  <span
-                    aria-hidden
-                    className="mx-1 inline-block h-1 w-1 rounded-full bg-[#F97316]/80"
-                  />
-                )}
+
+                <span
+                  aria-hidden
+                  className="mx-1 inline-block h-1 w-1 rounded-full bg-[#F97316]/80"
+                />
+
                 {label}
               </span>
             ))}
