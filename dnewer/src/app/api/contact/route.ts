@@ -2,7 +2,7 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 export async function POST(req: Request) {
   try {
@@ -12,38 +12,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    // Load and sanitize env
-    const host = (process.env.SMTP_HOST || "smtp.gmail.com").trim();
-    const port = Number((process.env.SMTP_PORT || 465).toString());
-    const secure = String(process.env.SMTP_SECURE || "true") === "true";
-    const user = (process.env.SMTP_USER || "").trim();
-    const pass = (process.env.SMTP_PASS || "").trim().replace(/\s+/g, ""); // strip spaces
-    const to = (process.env.CONTACT_TO || "Dnewer@hotmail.com").trim();
+    // ---- ENV (Resend) ----
+    const RESEND_API_KEY = (process.env.RESEND_API_KEY || "").trim();
+    const FROM = (process.env.CONTACT_FROM || "").trim(); // e.g. "Dnewer <hello@yourdomain.com>" (must be verified in Resend)
+    const TO = (process.env.CONTACT_TO || "Dnewer@hotmail.com").trim();
 
-    // Validate – fail early with helpful message
     const missing: string[] = [];
-    if (!host) missing.push("SMTP_HOST");
-    if (!user) missing.push("SMTP_USER");
-    if (!pass) missing.push("SMTP_PASS");
+    if (!RESEND_API_KEY) missing.push("RESEND_API_KEY");
+    if (!FROM) missing.push("CONTACT_FROM");
     if (missing.length) {
       return NextResponse.json(
-        { error: `Missing env: ${missing.join(", ")}. Is .env.local in project root and dev server restarted?` },
+        {
+          error: `Missing env: ${missing.join(
+            ", "
+          )}. Make sure your sender (CONTACT_FROM) is a verified domain/address in Resend.`,
+        },
         { status: 500 }
       );
     }
 
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure, // true -> SMTPS (465); false -> STARTTLS (587)
-      auth: { user, pass },
-      connectionTimeout: 10_000,
-      greetingTimeout: 10_000,
-      socketTimeout: 20_000,
-    });
-
-    // Surface connection/auth problems clearly
-    await transporter.verify();
+    const resend = new Resend(RESEND_API_KEY);
 
     const html = `
 <!doctype html>
@@ -112,12 +100,12 @@ export async function POST(req: Request) {
                           </td>
                         </tr>
                         ${phone
-        ? `<tr>
-                                 <td style="width:120px; font-size:12px; color:#64748b; padding:6px 0;">Phone</td>
-                                 <td style="font-size:14px; color:#0f172a; padding:6px 0; font-weight:600;">${escapeHtml(phone)}</td>
-                               </tr>`
-        : ""
-      }
+                          ? `<tr>
+                               <td style="width:120px; font-size:12px; color:#64748b; padding:6px 0;">Phone</td>
+                               <td style="font-size:14px; color:#0f172a; padding:6px 0; font-weight:600;">${escapeHtml(phone)}</td>
+                             </tr>`
+                          : ""
+                        }
                         <tr>
                           <td colspan="2" style="padding-top:14px; font-size:12px; color:#64748b;">Message</td>
                         </tr>
@@ -135,8 +123,8 @@ export async function POST(req: Request) {
                         <tr>
                           <td>
                             <a href="mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
-        "Re: Dnewer — Contact from " + (name || "visitor")
-      )}"
+                              "Re: Dnewer — Contact from " + (name || "visitor")
+                            )}"
                                style="display:inline-block; background:#F97316; color:#ffffff; text-decoration:none; font-weight:700; font-size:14px; padding:10px 14px; border-radius:10px;">
                               Reply to ${escapeHtml(name)}
                             </a>
@@ -167,26 +155,29 @@ export async function POST(req: Request) {
 </html>
 `.trim();
 
-
-    const info = await transporter.sendMail({
-      from: `"Dnewer Website" <${user}>`, // Gmail: must match the authenticated user
-      to,
+    const { data, error } = await resend.emails.send({
+      from: FROM,     // e.g. "Dnewer <hello@yourdomain.com>"
+      to: [TO],
       subject: `Dnewer — Contact Request from ${name}`,
-      replyTo: email,
       html,
+      reply_to: email, // lets you reply straight to the sender
     });
 
-    return NextResponse.json({ ok: true, messageId: info.messageId });
-  } catch (err: any) {
-    console.error("Contact API error:", err);
-    // Map common Nodemailer errors to clear messages
-    let msg = err?.message || "Email failed.";
-    if (err?.code === "EAUTH") msg = "SMTP auth failed. Check SMTP_USER / SMTP_PASS (App Password, no spaces).";
-    if (err?.code === "ECONNECTION") msg = "SMTP connection failed. Check SMTP_HOST/PORT and your network.";
-    if (/getaddrinfo ENOTFOUND|EAI_AGAIN/i.test(String(err))) msg = "DNS lookup failed for SMTP host.";
-    if (/self signed certificate/i.test(String(err))) msg = "TLS cert issue. Try SMTP_SECURE=false with port 587.";
+    if (error) {
+      // Common Resend errors include invalid sender (unverified domain) or blocked content
+      return NextResponse.json(
+        { error: error.message || "Email failed via Resend." },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ ok: true, id: data?.id });
+  } catch (err: any) {
+    console.error("Contact API error (Resend):", err);
+    return NextResponse.json(
+      { error: err?.message || "Email failed." },
+      { status: 500 }
+    );
   }
 }
 
