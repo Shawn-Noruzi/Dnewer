@@ -36,7 +36,7 @@ export default function Services() {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <section className="relative bg-gradient-to-b from-white to-neutral-50 py-20">
+    <section className="relative bg-gradient-to-b from-white to-neutral-50 py-10 md:py-20">
       <div className="container relative z-10">
         {/* Header */}
         <motion.div

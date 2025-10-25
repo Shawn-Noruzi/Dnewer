@@ -52,7 +52,7 @@ export default function ReviewsCarouselClient({
   const initialSlide = data.length;
 
   return (
-    <section className="relative overflow-hidden py-20">
+    <section className="relative overflow-hidden py-10 md:py-20">
       <div className="container">
         <div className="mb-10 text-center">
           <h2 className="font-display text-4xl md:text-5xl text-[var(--color-brand-dark)]">

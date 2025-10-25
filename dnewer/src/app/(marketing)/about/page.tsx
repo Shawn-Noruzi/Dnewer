@@ -12,7 +12,7 @@ export default function AboutPage() {
     return (
         <main className="relative">
             {/* ========= HERO / BANNER ========= */}
-            <section className="relative overflow-hidden mt-20">
+            <section className="relative overflow-hidden mt-[118px]">
                 <div
                     className="relative"
                     style={{
@@ -39,7 +39,7 @@ export default function AboutPage() {
                         className="pointer-events-none absolute -left-24 top-0 h-[200%] w-[60%] rotate-12 bg-white/10 blur-2xl"
                     />
 
-                    <div className="container relative py-20 md:py-28 text-center text-white">
+                    <div className="container relative py-10 md:py-20 text-center text-white">
                         <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-sm font-semibold backdrop-blur">
                             Dnewer Services Ltd.
                         </span>
@@ -56,7 +56,7 @@ export default function AboutPage() {
             </section>
 
             {/* ========= MISSION ========= */}
-            <section className="container py-14 md:py-20">
+            <section className="container py-10 md:py-20">
                 <div className="grid items-start gap-10 md:grid-cols-2">
                     <div>
                         <h2 className="font-display text-3xl md:text-4xl text-[var(--color-brand-dark,#111)]">

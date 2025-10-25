@@ -67,7 +67,7 @@ const services = [
     },
     {
         icon: AlarmClock,
-        title: "24/7 Emergency Calls",
+        title: "24/7 Service Calls",
         desc:
             "After-hours response for leaks, damage, and urgent make-safe actions with follow-up repairs.",
         bullets: ["Make-Safe", "Leak Response", "Board-Ups"],
@@ -93,7 +93,7 @@ export default function ServicesPage() {
     return (
         <main className="relative">
             {/* ========= HERO / BANNER (brand-matched) ========= */}
-            <section className="relative overflow-hidden mt-20">
+            <section className="relative overflow-hidden mt-[118px]">
                 <div
                     className="relative"
                     style={{
@@ -119,7 +119,7 @@ export default function ServicesPage() {
                         className="pointer-events-none absolute -left-24 top-0 h-[200%] w-[60%] rotate-12 bg-white/10 blur-2xl"
                     />
 
-                    <div className="container relative py-20 md:py-28 text-center text-white">
+                    <div className="container relative py-10 md:py-20 text-center text-white">
                         <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-sm font-semibold backdrop-blur">
                             What We Do
                         </span>
@@ -166,7 +166,7 @@ export default function ServicesPage() {
 
 
             {/* ========= MINI PROCESS (Brand backdrop + rounded card section) ========= */}
-            <section className="relative overflow-hidden py-20">
+            <section className="relative overflow-hidden py-10 md:py-20">
                 <div className="relative">
                     <div className="container relative ">
                         {/* Rounded card wrapper for the whole section */}

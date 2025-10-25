@@ -11,8 +11,64 @@ type Props = {
   navOffset?: number; // default 72
 };
 
+/** Detect mobile via matchMedia to swap mobile/desktop variants */
+function useIsMobile(breakpointPx = 640) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpointPx}px)`);
+    const handler = (e: MediaQueryListEvent | MediaQueryList) =>
+      setIsMobile("matches" in e ? e.matches : (e as MediaQueryList).matches);
+    handler(mq);
+    if ("addEventListener" in mq) mq.addEventListener("change", handler as any);
+    else (mq as any).addListener(handler);
+    return () => {
+      if ("removeEventListener" in mq) mq.removeEventListener("change", handler as any);
+      else (mq as any).removeListener(handler);
+    };
+  }, [breakpointPx]);
+  return isMobile;
+}
+
+/** Parse a filename path into base + variant */
+function splitVariant(src: string) {
+  const name = src.split("/").pop() || src;
+  const lower = name.toLowerCase();
+  // handle -desktop.webp / -mobile.webp
+  if (/-desktop\.webp$/i.test(lower)) {
+    const base = name.replace(/-desktop\.webp$/i, "");
+    return { base, variant: "desktop" as const, src };
+  }
+  if (/-mobile\.webp$/i.test(lower)) {
+    const base = name.replace(/-mobile\.webp$/i, "");
+    return { base, variant: "mobile" as const, src };
+  }
+  // no variant suffix → treat as "original"
+  const base = name.replace(/\.[^.]+$/i, "");
+  return { base, variant: "original" as const, src };
+}
+
 export default function GalleryGrid({ images, navOffset = 72 }: Props) {
-  const items = useMemo(() => images.map((src, i) => ({ id: `${i}-${src}`, src })), [images]);
+  // Build unique entries by base name; attach desktop/mobile/original when available
+  const items = useMemo(() => {
+    const map = new Map<
+      string,
+      { id: string; base: string; desktop?: string; mobile?: string; original?: string }
+    >();
+
+    images.forEach((fullPath, i) => {
+      const { base, variant, src } = splitVariant(fullPath);
+      const key = base.toLowerCase();
+
+      if (!map.has(key)) {
+        map.set(key, { id: `${i}-${key}`, base, [variant]: src } as any);
+      } else {
+        const prev = map.get(key)!;
+        (prev as any)[variant] = src;
+      }
+    });
+
+    return Array.from(map.values());
+  }, [images]);
 
   // Lightbox state
   const [open, setOpen] = useState(false);
@@ -22,6 +78,11 @@ export default function GalleryGrid({ images, navOffset = 72 }: Props) {
   // Touch tracking for swipe on mobile
   const touchStartX = useRef<number | null>(null);
   const touchDeltaX = useRef(0);
+
+  // Offsets/sizes for UI elements
+  const closeTop = `calc(env(safe-area-inset-top, 0px) + ${navOffset}px + 8px)`;
+  const closeHitHeight = 56; // px (mobile close button area)
+  const mobileBarHeight = 64; // px (bottom controls bar height)
 
   const openAt = (i: number) => {
     setIdx(i);
@@ -63,12 +124,19 @@ export default function GalleryGrid({ images, navOffset = 72 }: Props) {
     );
   }
 
+  const isMobile = useIsMobile(640);
+
   return (
     <>
       {/* Uniform-size responsive grid — max 4 columns, 2 on mobile */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
         {items.map((it, i) => (
-          <GalleryCard key={it.id} src={it.src} onClick={() => openAt(i)} />
+          <GalleryCard
+            key={it.id}
+            onClick={() => openAt(i)}
+            // Prefer mobile on small screens, desktop on larger; fallback gracefully
+            src={isMobile ? it.mobile || it.desktop || it.original! : it.desktop || it.mobile || it.original!}
+          />
         ))}
       </div>
 
@@ -99,27 +167,25 @@ export default function GalleryGrid({ images, navOffset = 72 }: Props) {
             touchDeltaX.current = 0;
           }}
         >
-          {/* Close (X) — offset below navbar; bigger hit-area on mobile */}
+          {/* Close (X) — above everything */}
           <button
             aria-label="Close"
             onClick={close}
-            className="cursor-pointer group absolute right-4 sm:right-6 rounded-lg border border-white/15 bg-white/10 p-3 sm:p-2 text-white transition hover:bg-white/20"
-            style={{
-              top: `calc(env(safe-area-inset-top, 0px) + ${navOffset}px + 8px)`,
-            }}
+            className="cursor-pointer group absolute right-4 sm:right-6 z-[130] rounded-lg border border-white/15 bg-white/10 p-3 sm:p-2 text-white transition hover:bg-white/20"
+            style={{ top: closeTop }}
           >
             <X className="h-6 w-6 sm:h-5 sm:w-5" />
             <span className="pointer-events-none absolute inset-x-2 -bottom-1 h-0.5 scale-x-0 rounded bg-[#F97316] transition group-hover:scale-x-100" />
           </button>
 
-          {/* Desktop arrow buttons */}
+          {/* Desktop arrow buttons (middle left/right) */}
           <button
             aria-label="Previous"
             onClick={(e) => {
               e.stopPropagation();
               prev();
             }}
-            className="hidden sm:flex cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-lg border border-white/15 bg-white/10 p-2 text-white transition hover:bg-white/20"
+            className="hidden sm:flex cursor-pointer absolute left-4 top-1/2 -translate-y-1/2 rounded-lg border border-white/15 bg-white/10 p-2 text-white transition hover:bg-white/20 z-[90]"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
@@ -130,19 +196,23 @@ export default function GalleryGrid({ images, navOffset = 72 }: Props) {
               e.stopPropagation();
               next();
             }}
-            className="hidden sm:flex cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-lg border border-white/15 bg-white/10 p-2 text-white transition hover:bg-white/20"
+            className="hidden sm:flex cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 rounded-lg border border-white/15 bg-white/10 p-2 text-white transition hover:bg-white/20 z-[90]"
           >
             <ChevronRight className="h-6 w-6" />
           </button>
 
-          {/* Mobile edge tap zones (full-height, invisible) */}
+          {/* Mobile edge tap zones (reduced height so they don't cover the bottom controls) */}
           <button
             aria-label="Previous"
             onClick={(e) => {
               e.stopPropagation();
               prev();
             }}
-            className="sm:hidden absolute left-0 top-0 h-full w-1/3"
+            className="sm:hidden absolute left-0 w-1/3 z-[80]"
+            style={{
+              top: `calc(${closeTop} + ${closeHitHeight}px)`,
+              height: `calc(100% - (${closeTop} + ${closeHitHeight + mobileBarHeight}px))`,
+            }}
           />
           <button
             aria-label="Next"
@@ -150,16 +220,24 @@ export default function GalleryGrid({ images, navOffset = 72 }: Props) {
               e.stopPropagation();
               next();
             }}
-            className="sm:hidden absolute right-0 top-0 h-full w-1/3"
+            className="sm:hidden absolute right-0 w-1/3 z-[80]"
+            style={{
+              top: `calc(${closeTop} + ${closeHitHeight}px)`,
+              height: `calc(100% - (${closeTop} + ${closeHitHeight + mobileBarHeight}px))`,
+            }}
           />
 
-          {/* Centered image with brand frame */}
-          <div className="flex h-full items-center justify-center p-3 sm:p-6 md:p-10 mt-16">
-            <div className="relative w-full max-w-6xl">
-              <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-[#F97316]/20" />
-              <div className="relative aspect-[16/10]">
+          {/* Image area — full width on mobile */}
+          <div className="flex h-full items-center justify-center p-0 sm:p-6 md:p-10 mt-16">
+            <div className="relative w-screen max-w-none sm:w-full sm:max-w-6xl">
+              <div className="pointer-events-none absolute inset-0 rounded-none sm:rounded-xl ring-0 sm:ring-1 sm:ring-[#F97316]/20" />
+              <div className="relative aspect-[9/16] sm:aspect-[16/10]">
                 <Image
-                  src={items[idx].src}
+                  src={
+                    isMobile
+                      ? items[idx].mobile || items[idx].desktop || items[idx].original!
+                      : items[idx].desktop || items[idx].mobile || items[idx].original!
+                  }
                   alt={`Gallery image ${idx + 1}`}
                   fill
                   className="object-contain"
@@ -170,11 +248,37 @@ export default function GalleryGrid({ images, navOffset = 72 }: Props) {
             </div>
           </div>
 
-          {/* Index badge (mobile visible) */}
-          <div className="sm:hidden pointer-events-none absolute inset-x-0 bottom-[max(env(safe-area-inset-bottom,0px),12px)] flex justify-center">
-            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white ring-1 ring-white/20">
+          {/* Mobile bottom control bar */}
+          <div
+            className="sm:hidden fixed inset-x-0 z-[120] flex items-center justify-between px-4 py-3"
+            style={{ bottom: `max(env(safe-area-inset-bottom,0px), 0px)` }}
+          >
+            <div className="pointer-events-none absolute inset-x-0 -z-10 h-full bg-black/40 backdrop-blur-sm" />
+            <button
+              aria-label="Previous image"
+              onClick={(e) => {
+                e.stopPropagation();
+                prev();
+              }}
+              className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-white active:scale-[0.98]"
+            >
+              <ChevronLeft className="h-5 w-5" />
+              Prev
+            </button>
+            <span className="text-white/90 text-sm">
               {idx + 1} / {items.length}
             </span>
+            <button
+              aria-label="Next image"
+              onClick={(e) => {
+                e.stopPropagation();
+                next();
+              }}
+              className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-white active:scale-[0.98]"
+            >
+              Next
+              <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
         </div>
       )}

@@ -25,7 +25,7 @@ export default function GalleryPage() {
   return (
     <main className="relative">
       {/* ===== Brand Banner (matched styling) ===== */}
-      <section className="relative overflow-hidden mt-20">
+      <section className="relative overflow-hidden mt-[118px]">
         <div
           className="relative"
           style={{
@@ -52,7 +52,7 @@ export default function GalleryPage() {
             className="pointer-events-none absolute -left-24 top-0 h-[200%] w-[60%] rotate-12 bg-white/10 blur-2xl"
           />
 
-          <div className="container relative py-20 md:py-28 text-center text-white">
+          <div className="container relative py-10 md:py-20 text-center text-white">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-sm font-semibold backdrop-blur">
               Our Work
             </span>
@@ -67,7 +67,7 @@ export default function GalleryPage() {
       </section>
 
       {/* ===== Grid ===== */}
-      <section className="container py-10 md:py-14">
+      <section className="px-2.5 py-10 md:py-14">
         <GalleryGrid images={files} navOffset={120} />
       </section>
 

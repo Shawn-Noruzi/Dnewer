@@ -91,7 +91,7 @@ export default function SiteFooter() {
   );
 
   return (
-    <footer className="relative bg-black text-white -mt-[210px] -z-1 pt-[240px]">
+    <footer className="relative bg-black text-white -mt-60 -z-1 pt-60">
       <div className="container py-12 grid gap-10 md:grid-cols-4">
         {/* ---------- Brand ---------- */}
         <div>

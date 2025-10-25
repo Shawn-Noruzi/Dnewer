@@ -32,7 +32,7 @@ export default function ServiceArea() {
   const { openContactModal } = useContactModal();
 
   return (
-    <section className="relative overflow-hidden py-20">
+    <section className="relative overflow-hidden py-10 md:py-20">
       <div className="container">
         {/* Header */}
         <motion.div

@@ -149,7 +149,7 @@ export default function HeroHeader() {
             </span>
 
 
-            <span className="uppercase text-white">24/7 Emergency Repairs</span>
+            <span className="uppercase text-white">24/7 Service Call</span>
           </motion.div>
 
         </div>
