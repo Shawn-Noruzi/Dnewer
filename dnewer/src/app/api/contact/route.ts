@@ -160,7 +160,7 @@ export async function POST(req: Request) {
       to: [TO],
       subject: `Dnewer — Contact Request from ${name}`,
       html,
-      reply_to: email, // lets you reply straight to the sender
+      replyTo: email, // lets you reply straight to the sender
     });
 
     if (error) {
