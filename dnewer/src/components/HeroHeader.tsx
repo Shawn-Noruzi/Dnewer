@@ -122,7 +122,7 @@ export default function HeroHeader() {
             custom={3}
             {...animationProps}
           >
-            <button onClick={() => openContactModal()} className="btn btn-secondary text-base">
+            <button onClick={() => openContactModal()} className="btn btn-secondary text-base cursor-pointer">
               Get a Free Quote
             </button>
 
